@@ -193,14 +193,12 @@ function showerror(io::IO, ex::TypeError)
 end
 
 function showerror(io::IO, ex, bt; backtrace=true)
-    # List of exceptions for which backtraces are not printed
-    no_bt_list = [Base.Test.TestSetException, Base.Pkg.Entry.PkgTestError]
     try
         with_output_color(have_color ? error_color() : :nothing, io) do io
             showerror(io, ex)
         end
     finally
-        backtrace && !(typeof(ex) in no_bt_list) && show_backtrace(io, bt)
+        backtrace && show_backtrace(io, bt)
     end
 end
 
