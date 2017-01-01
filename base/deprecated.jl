@@ -1470,4 +1470,6 @@ end
 @deprecate (|)(A::AbstractArray, b::Number)         A .| b
 @deprecate (|)(A::AbstractArray, B::AbstractArray)  A .| B
 
+@deprecate_binding FloatRange StepRangeHiLo
+
 # End deprecations scheduled for 0.6
