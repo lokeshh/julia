@@ -731,6 +731,13 @@ function test!(pkg::AbstractString,
     isfile(reqs_path) && resolve()
 end
 
+type PkgTestError <: Exception
+    msg::String
+end
+
+Base.show(io::IO, pkgerr::PkgTestError) = print(io, pkgerr.msg)
+Base.showerror(io::IO, ex::PkgTestError, bt; backtrace=true) = Base.showerror(io, ex)
+
 function test(pkgs::Vector{AbstractString}; coverage::Bool=false)
     errs = AbstractString[]
     nopkgs = AbstractString[]
@@ -751,10 +758,8 @@ function test(pkgs::Vector{AbstractString}; coverage::Bool=false)
         if !isempty(notests)
             push!(messages, "$(join(notests,", "," and ")) did not provide a test/runtests.jl file")
         end
-        Base.display_error(PkgError(join(messages, "and")))
-        !Base.isinteractive() && exit(1)
+        throw(PkgTestError(join(messages, "and")))
     end
-    return nothing
 end
 
 test(;coverage::Bool=false) = test(sort!(AbstractString[keys(installed())...]); coverage=coverage)

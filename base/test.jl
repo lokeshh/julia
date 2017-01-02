@@ -382,6 +382,8 @@ function Base.show(io::IO, ex::TestSetException)
     print(io, ex.broken, " broken.")
 end
 
+Base.showerror(io::IO, ex::TestSetException, bt; backtrace=true) = show(io, ex)
+
 #-----------------------------------------------------------------------
 
 """
@@ -521,9 +523,7 @@ function finish(ts::DefaultTestSet)
     if total != total_pass + total_broken
         # Get all the error/failures and bring them along for the ride
         efs = filter_errors(ts)
-        Base.display_error(TestSetException(total_pass,total_fail,total_error, total_broken, efs))
-        println()
-        Base.isinteractive() ? (return nothing) : exit(1)
+        throw(TestSetException(total_pass,total_fail,total_error, total_broken, efs))
     end
 
     # return the testset so it is returned from the @testset macro
