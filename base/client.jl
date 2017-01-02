@@ -128,10 +128,7 @@ end
 display_error(er) = display_error(er, [])
 function display_error(er, bt)
     print_with_color(Base.error_color(), STDERR, "ERROR: "; bold = true)
-    with_output_color(Base.error_color(), STDERR) do io
-        showerror(io, er, bt)
-        println(io)
-    end
+    Base.showerror(IOContext(STDERR, :limit => true), er, bt)
 end
 
 function eval_user_input(ast::ANY, show_value)
